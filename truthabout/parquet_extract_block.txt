@@ -1,0 +1,9 @@
+\t{
+\n\t"environments": ${common.environs},
+\n\t"type": "ParquetExtract",
+\n\t"name": "isu_dfkkppd",
+\n\t"inputURI": ${common.datalake_root_uri}"/<<data_lake_location>>/cr/",
+\n\t"outputView": "<<table_name>>",
+\n\t"persist": false,
+\n\t"authentication": ${common.auth}
+\t},

@@ -106,7 +106,7 @@ class truthabout:
 
 
 
-    def write_block_parquet_extract(self,data_lake_location,table_name):
+    def write_block_parquet_extract(self,table_name,data_lake_location):
         # table_name = args[0]  #"<<table_name>>",
         # data_lake_location = args[1] #<<data_lake_location>>
         template_file = os.path.join(os.path.normpath(os.getcwd()), (globals.TEMPLATES_PATH + "parquet_extract_block.txt"))
@@ -114,8 +114,9 @@ class truthabout:
         try:
             with open(template_file, 'r', encoding='unicode_escape') as infile:
                 content = infile.read()
+                print(data_lake_location)
                 content = re.sub("<<table_name>>", table_name, content)
-                content = re.sub("<data_lake_location>>", data_lake_location, content)
+                content = re.sub("<<data_lake_location>>", data_lake_location, content)
         except FileNotFoundError as err:
             print(err, " while trying to create _job.json for parquet extract")
 
