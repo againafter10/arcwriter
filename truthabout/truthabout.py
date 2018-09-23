@@ -3,27 +3,26 @@ import re
 import datetime
 import constants.globals as globals
 
+
+
+
+
 class truthabout:
 
     def __init__(self):
-        truthname = ''
-        truth_config = []
-        truth_job = ''
-        truth_schedule = ''
-        #truth_dependency = ''
+        self.truthname = ''
+        self.truth_config = []
+        self.job_filename = ''
+        selfjob_schedulefilename = ''
+        self._stage_type = {
+            "ParquetExtract": self.stage_parquet_extract,
+            # "SQLTransform": self.write_create_table_sql_block,
+            # "ParquetLoad": self.write_load_parquet,
+            # "JDBCExecute": self.write_jdbc_excute,
+            # "JDBCLoad": self.write_jdbc_load,
+            "Schedule": self.write_schedule_file
 
-    stage_type = {
-        "ParquetExtract": 'stage_parquet_extract',
-        "SQLTransform": 'write_create_table_sql_block',
-        "ParquetLoad": 'write_load_parquet',
-        "JDBCExecute": 'write_jdbc_excute',
-        "JDBCLoad": 'write_jdbc_load',
-        "Schedule": 'write_schedule_file'
-    }
-
-    def call_me(self, arg):
-        return getattr(self, self.stage_type[arg])(arg)
-
+        }
 
 
     #setters
@@ -34,6 +33,8 @@ class truthabout:
     def set_truth_config(self,truth_config):
         self.truth_config = truth_config
 
+    def set_job_filename(self,filename):
+        self.job_filename = filename
 
     #getters
     def get_truthname(self):
@@ -95,10 +96,34 @@ class truthabout:
                 content = re.sub("<<truthname>>",self.truthname,content)
                 content = re.sub("<<JOB_ENVIRONS>>",globals.JOB_ENVIRONS,content)
         except FileNotFoundError as err:
-            print(err," while trying to create _job.json")
+            print("ERROR write_block_common: " ,err)
 
         else:
             return(content)
+
+    #########################
+    # write block parquet extract
+
+
+
+    def write_block_parquet_extract(self,data_lake_location,table_name):
+        # table_name = args[0]  #"<<table_name>>",
+        # data_lake_location = args[1] #<<data_lake_location>>
+        template_file = os.path.join(os.path.normpath(os.getcwd()), (globals.TEMPLATES_PATH + "parquet_extract_block.txt"))
+        content = ""
+        try:
+            with open(template_file, 'r', encoding='unicode_escape') as infile:
+                content = infile.read()
+                content = re.sub("<<table_name>>", table_name, content)
+                content = re.sub("<data_lake_location>>", data_lake_location, content)
+        except FileNotFoundError as err:
+            print(err, " while trying to create _job.json for parquet extract")
+
+        else:
+            return (content)
+
+
+    #############################
 
     # write to file
     def write_block_tail(self):
@@ -106,10 +131,11 @@ class truthabout:
 
 
     # write to file
-    def write_to_file(self,filename,content):
-        with open(filename, 'w+') as outfile:
-            block_to_write = self.write_block_common()
-            outfile.write(block_to_write)
+    def write_to_file(self,content):
+        with open(self.job_filename, 'a') as outfile:
+            #block_to_write = self.write_block_common()
+            #outfile.write(block_to_write)
+            outfile.write(content)
         outfile.close()
 
     # write schedule_file
@@ -129,65 +155,63 @@ class truthabout:
         file_path = self.get_file_path()
         filename = os.path.join(file_path, (self.truthname + "_job.json"))
         print("job file path is: ", filename)
-
+        self.set_job_filename(filename)
         try:
             # write the common block
-            self.write_to_file(filename, self.write_block_common())
+            #hard delete the job file
+            self.write_to_file(self.write_block_common())
 
             #write stages
             self.write_block_stage()
         except ValueError as err:
             print("Error: " ,err)
 
+    #######################
 
-    def call_stage_type(self,f,p):
-       f(p)
+
+    # def do_stage(self, arg,args):
+    #     #return getattr(self, arg)()
+    #     #print(self._stage_type[arg])
+    #     #return self._stage_type[arg](*arg,**kwargs)
+    #     return(self._stage_type[arg])(args)
+
+    ############################
 
     #write the stages of the json file
     def write_block_stage(self):
-
-
         # Reading through lines in in_arr:
         print("<<<<<<<<<<<< stages in the config file are >>>>>>>>>>>")
         count = 0
         for stage in self.truth_config:
-            if stage[0] not in self.stage_type:
+            if stage[0] not in self._stage_type:
                 print("Error PE1: Invalid stage type: ",stage[0])
             else:
                 if count != len(self.truth_config):
-                    #[stage[0]](stage[1:])
-                    #stage_type[[stage[0]]](stage[1:])
-                    self.call_me([stage[0]])
-                    #self.call_stage_type(stage[0],stage[1:])
-                    #job_file.write(job_functions[line[0]](truthname, line[1:]))
+
+                    #self.do_stage(self._stage_type[stage[0]],stage[1:])
+                    self._stage_type[stage[0]](stage[1:])
+
 
                     # strip comma fromt the last block
-                    # better to remove from last than add to each block
+                    # better to remove from last than add to each block or strip it when adding the tail
                     pass
 
 
         print("<<<<<<<<<<<<        >>>>>>>>>>>")
 
-    def stage_parquet_extract(self,line=[]):
+    #######################
+    # write parquet stage
+    def stage_parquet_extract(self,args):
+        # table_name = args[0]  #"<<table_name>>",
+        # data_lake_location = args[1] #<< data_lake_location >>
+        print("stage_parquet_extract: ",args)
+        self.write_to_file(self.write_block_parquet_extract(args[0],args[1]))
 
-        # Write Extract:
-        def w_p_extract(truthname, line):
-            try:
-                location = line[1]
-                table = line[0]
-                return "\t{" \
-                       "\n\t\"environments\": ${common.environs}," \
-                       "\n\t\"type\": \"ParquetExtract\"," \
-                       "\n\t\"name\": \"Parquet Extract " + table + "\"," \
-                                                                    "\n\t\"inputURI\": ${common.datalake_root_uri}\"/" + location + "/cr/*\"," \
-                                                                                                                                    "\n\t\"outputView\": \"" + table + "\"," \
-                                                                                                                                                                       "\n\t\"persist\": false," \
-                                                                                                                                                                       "\n\t\"authentication\": ${common.auth}," \
-                                                                                                                                                                       "\n\t\"params\": {" \
-                                                                                                                                                                       "\n\t\t}" \
-                                                                                                                                                                       "\n\t},\n"
-            except:
-                print("PE not properly defined, please use >>PE, datalake_path, table_name")
+
+
+
+
+
     ################
 
     def write_create_table_sql_block(self):
@@ -204,15 +228,9 @@ class truthabout:
 
 
 
-
     ##############################
     ##############################
-    ##############################
-    ##############################
-    ##############################
-    ##############################
-    ##############################
-    def write_schedule_file(self):
+    def write_schedule_file(self,line = []):
         template_file = os.path.join(os.path.normpath(os.getcwd()), (globals.TEMPLATES_PATH + "schedule_block.txt"))
         line = self.truth_config[0]
         print(line, template_file)
@@ -353,5 +371,7 @@ class truthabout:
     ##### Not needed for bulk load/can be changed later #############
     #################################################################
     # -------------------------------------- _sql_exec_stored_procedure.sql: --------------------------------------
-                                                                                                                                                                                               "\nBEGIN" \
-        
+    # Write exec_stored_proc
+    def w_exec_stored_proc(truthname, classification):
+        pass
+

@@ -17,6 +17,8 @@ truth_config = truth.read_config_file(truth.truthname,globals.CONFIGS_PATH)
 truth.set_truth_config(truth_config)
 
 
+#truth.write_schedule_file(truth_config[0])
+# truth.write_schedule_file()
 truth.write_files()
 
 
