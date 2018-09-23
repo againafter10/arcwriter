@@ -1,0 +1,19 @@
+{
+
+	"SCH_vm_size": "sql/dp/",
+
+	"SCH_job_start_time": "tta_",
+
+	"SCH_job_end_time": "",
+
+	"SCH_job_interval_mins": "debt",
+
+	"SCH_input_account_name": "",
+
+	"SCH_input_account_rg": "",
+
+	"SCH_output_account_name": "",
+
+	"SCH_output_account_rg": ""
+
+}

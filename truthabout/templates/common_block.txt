@@ -1,0 +1,16 @@
+{
+\n\t"common": {
+\n\t"auth": {
+\n\t\t"method": "AzureSharedKey",
+\n\t\t"accountName": ${ETL_CONF_AZURE_ACCOUNT_NAME},
+\n\t\t"signature": ${ETL_CONF_AZURE_ACCOUNT_KEY}
+\n\t\t},
+\n\t"datalake_root_uri": "wasbs://datalake@"${ETL_CONF_AZURE_ACCOUNT_NAME}".blob.core.windows.net",
+\n\t"sql_root_uri": "wasbs://in-cap@"${ETL_CONF_AZURE_ACCOUNT_NAME}".blob.core.windows.net/<<sql_root>><<short_prefix>><<truthname>>",
+\n\t"environs": [<<JOB_ENVIRONS>>]
+\n\t\"sql_params": {
+\n\t\t\"current_date": ${SQL_PARAM_CURRENT_DATE},"
+\n\t\t\"current_timestamp": ${SQL_PARAM_CURRENT_TIMESTAMP}"
+\n\t\t},
+\n\t},
+\n\"stages": [\n
