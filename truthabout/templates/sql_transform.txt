@@ -1,0 +1,12 @@
+\t{
+\t\t"environments": ${common.environs},
+\t\t"type": "SQLTransform",
+\t\t"name": "<<name>>",
+\t\t"inputURI": ${common.sql_root_uri}"/<<sql_name>>.sql",
+\t\t"outputView": "<<name>>",
+\t\t"persist": false,
+\t\t"sqlParams": {
+\t\t\t"current_timestamp": ${SQL_PARAM_CURRENT_TIMESTAMP}
+\t\t\t},
+\t\t"authentication": ${common.auth}
+\t\t},\n

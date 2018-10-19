@@ -1,0 +1,18 @@
+\t{
+\t\t"environments": ${common.environs},
+\t\t"type": "JDBCLoad",
+\t\t"name": "JDBC load <<input_view>> to sql server",
+\t\t"inputView": "<<input_view>>",
+\t\t"jdbcURL": "jdbc:sqlserver://"${ETL_CONF_SQLDW_SERVER_NAME}":1433",
+\t\t"tableName": "agl_data.[int].[<<staging_table>>]",
+\t\t"isolationLevel": "READ_COMMITTED",
+\t\t"batchsize": 1000000,
+\t\t"numPartitions": 8,
+\t\t"truncate": true,
+\t\t"tablock": false,
+\t\t"bulkload": true,
+\t\t"params": {
+\t\t\t"user": ${ETL_CONF_SQLDW_CREDENTIALNAME},
+\t\t\t"password": ${ETL_CONF_SQLDW_PASSWORD}
+\t\t\t}
+\t\t},\n

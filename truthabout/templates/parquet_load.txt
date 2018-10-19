@@ -1,0 +1,8 @@
+\t{
+\t\t"environments": ${common.environs},
+\t\t"type": "ParquetLoad",
+\t\t"name": "ParquetLoad <<table_name>>",
+\t\t"inputView": "<<table_name>>",
+\t\toutputURI": ${common.datalake_root_uri}"<<data_lake_location>>,
+\t\t"authentication": ${common.auth},
+\t},\n

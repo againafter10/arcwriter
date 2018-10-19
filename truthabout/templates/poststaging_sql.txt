@@ -1,0 +1,4 @@
+EXECUTE (N'DROP TABLE IF EXISTS [int].dp_cr_tta_<<tta_name>>_old;');
+EXECUTE SP_RENAME N'[int].dp_cr_tta_<<tta_name>>', N'dp_cr_tta_<<tta_name>>_old';
+EXECUTE SP_RENAME N'[int].dp_cr_tta_<<tta_name>>_staging', N'dp_cr_tta_<<tta_name>>';
+EXECUTE (N'DROP TABLE IF EXISTS [int].dp_cr_tta_<<tta_name>>_old;');

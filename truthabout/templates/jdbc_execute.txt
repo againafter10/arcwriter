@@ -1,0 +1,12 @@
+\t{
+\t\t"type": "JDBCExecute",
+\t\t"name": "<<name>>",
+\t\t"environments": ${common.environs},
+\t\t"inputURI": ${common.sql_root_uri}"/<<staging_sql>>.sql",
+\t\t"url": "jdbc:sqlserver://"${ETL_CONF_SQLDW_SERVER_NAME}":1433",
+\t\t"user": ${ETL_CONF_SQLDW_CREDENTIALNAME},
+\t\t"password": ${ETL_CONF_SQLDW_PASSWORD},
+\t\t"params" : {
+\t\t\t"databaseName": ${ETL_CONF_SQLDW_DATABASE_NAME}
+\t\t\t}
+\t},\n

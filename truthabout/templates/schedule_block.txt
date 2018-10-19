@@ -1,10 +1,10 @@
 {
-\n\t"SCH_vm_size": "<<size>>",
-\n\t"SCH_job_start_time": "<<start_time>>",
-\n\t"SCH_job_end_time": "",
-\n\t"SCH_job_interval_mins": <<interval>>,
-\n\t"SCH_input_account_name": "",
-\n\t"SCH_input_account_rg": "",
-\n\t"SCH_output_account_name": "",
-\n\t"SCH_output_account_rg": ""
-\n}
+\t"SCH_vm_size": "<<size>>",
+\t"SCH_job_start_time": "<<start_time>>",
+\t"SCH_job_end_time": "",
+\t"SCH_job_interval_mins": "<<interval>>",
+\t"SCH_input_account_name": "",
+\t"SCH_input_account_rg": "",
+\t"SCH_output_account_name": "",
+\t"SCH_output_account_rg": ""
+}

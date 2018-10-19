@@ -1,0 +1,15 @@
+DROP TABLE IF EXISTS [int].[dp_cr_tta_<<tta_name>>_staging]
+
+CREATE TABLE [int].[dp_cr_tta_<<tta_name>>_staging]
+(
+ <<col_list>>
+ ,INDEX dp_cr_tta_<<tta_name>>_cci CLUSTERED COLUMNSTORE
+);
+
+IF  OBJECT_ID(N'[int].[dp_cr_tta_<<tta_name>>]') IS NULL
+BEGIN
+SELECT * INTO [int].[dp_cr_tta_<<tta_name>>] FROM [int].[dp_cr_tta_<<tta_name>>_staging] WHERE 1=0;
+END
+
+IF  OBJECT_ID(N'[int].[dp_cr_tta_<<tta_name>>]') IS NULL
+EXECUTE (N'CREATE OR ALTER VIEW [<<view_scope>>].[dp_cr_tta_<<tta_name>>] AS SELECT * FROM [int].[dp_cr_tta_<<tta_name>>];')
